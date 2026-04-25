@@ -514,6 +514,12 @@
       const invoicesBody = $("invoicesBody");
       const expensesBody = $("expensesBody");
 
+      // Date input: placeholder isn't reliably shown on iOS; set a sensible default instead.
+      const reportDateEl = $("reportDate");
+      if (reportDateEl && !reportDateEl.value) {
+        reportDateEl.value = new Date().toISOString().slice(0, 10);
+      }
+
       function num(v) {
         if (v === "" || v == null) return 0;
         const n = Number(v);
