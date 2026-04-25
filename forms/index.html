@@ -137,6 +137,21 @@
         max-width: 100%;
         min-width: 0;
         display: block;
+        -webkit-appearance: none;
+        appearance: none;
+        overflow: hidden;
+      }
+      input[type="date"]::-webkit-date-and-time-value {
+        text-align: left;
+        min-width: 0;
+      }
+      input[type="date"]::-webkit-datetime-edit {
+        padding: 0;
+        min-width: 0;
+      }
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 0.8;
+        margin-left: 0.4rem;
       }
       textarea {
         min-height: 5.5rem;
