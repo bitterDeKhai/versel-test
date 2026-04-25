@@ -282,6 +282,22 @@
         font-size: 0.9rem;
         font-weight: 650;
       }
+      .icon-x {
+        width: 2rem;
+        height: 2rem;
+        display: inline-grid;
+        place-items: center;
+        border-radius: 0.5rem;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: inherit;
+        padding: 0;
+        cursor: pointer;
+      }
+      .icon-x:active {
+        opacity: 0.85;
+        transform: scale(0.99);
+      }
       .item-card .card-grid {
         display: grid;
         gap: 0.65rem;
@@ -608,12 +624,12 @@
         card.className = "item-card";
         card.innerHTML = `
           <div class="card-head">
-            <strong>Employee</strong>
-            <span class="right"></span>
+            <strong>Work Log</strong>
+            <button type="button" class="icon-x" aria-label="Remove work log">×</button>
           </div>
           <div class="card-grid">
             <div class="field">
-              <label>Employee</label>
+              <label>Employee Name</label>
               <input name="employeeName" type="text" placeholder="Name" value="">
             </div>
             <div class="time-row">
@@ -648,11 +664,7 @@
         card.querySelector('input[name="employeeName"]').value = initial.name ?? "";
         card.querySelector('input[name="employeeHours"]').value = initial.hours ?? "";
         card.querySelector('input[name="employeeMinutes"]').value = initial.minutes ?? "";
-        card.querySelector(".card-head .right").appendChild(
-          makeRemoveButton(() => {
-            card.remove();
-          }),
-        );
+        card.querySelector(".icon-x").addEventListener("click", () => card.remove());
         employeesBody.appendChild(card);
       }
 
