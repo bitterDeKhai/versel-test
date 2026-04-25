@@ -140,8 +140,11 @@
         const json = JSON.stringify(data);
 
         if (tg) {
+          const hint = document.getElementById("hint");
           tg.sendData(json);
-          tg.close();
+          if (hint) hint.textContent = "Отправлено в бот. Закрываю…";
+          // Give Telegram a moment to deliver web_app_data before closing.
+          setTimeout(() => tg.close(), 250);
         } else {
           alert("Предпросмотр (не в Telegram):\n" + json);
         }
