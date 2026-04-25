@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Daily Report</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+      :root {
+        color-scheme: light dark;
+        font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.4;
+        --fg: #1a1a1a;
+        --bg: #f4f4f5;
+        --card: #fff;
+        --accent: #2481cc;
+        --border: #d4d4d8;
+        --muted: rgba(0, 0, 0, 0.6);
+        --danger: #dc2626;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --fg: #f4f4f5;
+          --bg: #18181b;
+          --card: #27272a;
+          --border: #3f3f46;
+          --muted: rgba(255, 255, 255, 0.65);
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100dvh;
+        color: var(--fg);
+        background: var(--bg);
+        padding: 1rem;
+      }
+      .card {
+        max-width: 58rem;
+        margin: 0 auto;
+        padding: 1rem 1.1rem 1.15rem;
+        background: var(--card);
+        border-radius: 0.75rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+        border: 1px solid var(--border);
+      }
+      header {
+        display: flex;
+        gap: 0.75rem;
+        align-items: baseline;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+      }
+      h1 {
+        font-size: 1.15rem;
+        font-weight: 650;
+        margin: 0;
+      }
+      .subtle {
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.9rem;
+      }
+      @media (max-width: 640px) {
+        .grid-2 {
+          grid-template-columns: 1fr;
+        }
+      }
+      section {
+        border: 1px solid var(--border);
+        border-radius: 0.65rem;
+        padding: 0.85rem;
+        background: color-mix(in oklab, var(--card) 88%, var(--bg) 12%);
+      }
+      section h2 {
+        margin: 0 0 0.7rem;
+        font-size: 0.95rem;
+        font-weight: 650;
+      }
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+      label {
+        font-size: 0.85rem;
+        font-weight: 550;
+        opacity: 0.92;
+      }
+      input,
+      textarea,
+      select {
+        font: inherit;
+        color: inherit;
+        padding: 0.5rem 0.55rem;
+        border: 1px solid var(--border);
+        border-radius: 0.4rem;
+        background: var(--bg);
+        width: 100%;
+      }
+      textarea {
+        min-height: 5.5rem;
+        resize: vertical;
+      }
+      input[type="checkbox"] {
+        width: 1.05rem;
+        height: 1.05rem;
+        padding: 0;
+        margin: 0;
+        accent-color: var(--accent);
+      }
+      .row {
+        display: flex;
+        gap: 0.6rem;
+        align-items: center;
+        justify-content: space-between;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: 0.6rem;
+        background: var(--card);
+      }
+      th,
+      td {
+        border-bottom: 1px solid var(--border);
+        padding: 0.55rem;
+        vertical-align: top;
+      }
+      th {
+        font-size: 0.8rem;
+        text-align: left;
+        color: var(--muted);
+        font-weight: 650;
+        background: color-mix(in oklab, var(--card) 80%, var(--bg) 20%);
+      }
+      tr:last-child td {
+        border-bottom: none;
+      }
+      .actions {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        margin-top: 0.7rem;
+      }
+      button {
+        font: inherit;
+        font-weight: 650;
+        color: #fff;
+        background: var(--accent);
+        border: none;
+        border-radius: 0.45rem;
+        padding: 0.55rem 0.75rem;
+        cursor: pointer;
+      }
+      button.secondary {
+        color: var(--fg);
+        background: transparent;
+        border: 1px solid var(--border);
+      }
+      button.danger {
+        background: var(--danger);
+      }
+      button:active {
+        opacity: 0.9;
+        transform: scale(0.99);
+      }
+      .hint {
+        font-size: 0.75rem;
+        opacity: 0.7;
+        margin: 0.25rem 0 0;
+      }
+      .right {
+        text-align: right;
+      }
+      .nowrap {
+        white-space: nowrap;
+      }
+      .tight td input,
+      .tight td select {
+        padding: 0.45rem 0.5rem;
+      }
+      .checklist {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.55rem 0.9rem;
+      }
+      @media (max-width: 640px) {
+        .checklist {
+          grid-template-columns: 1fr;
+        }
+      }
+      .check-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.55rem;
+      }
+      .check-item span {
+        font-size: 0.9rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <header>
+        <h1>Daily Report</h1>
+        <div class="subtle">Sends JSON via Telegram WebApp <code>sendData</code></div>
+      </header>
+
+      <form id="form" novalidate>
+        <section>
+          <h2>Summary</h2>
+          <div class="grid-2">
+            <div class="field">
+              <label for="reportDate">Date</label>
+              <input id="reportDate" name="reportDate" type="date" required />
+            </div>
+
+            <div class="field">
+              <label for="signature">Signature (typed)</label>
+              <input id="signature" name="signature" type="text" autocomplete="name" placeholder="Full name" />
+              <p class="hint">If you need handwritten signature, capture it as a photo outside this form.</p>
+            </div>
+
+            <div class="field">
+              <label for="cashOnline">Cash + Online</label>
+              <input id="cashOnline" name="cashOnline" type="number" step="0.01" min="0" inputmode="decimal" />
+            </div>
+
+            <div class="field">
+              <label for="cardAmount">Card</label>
+              <input id="cardAmount" name="cardAmount" type="number" step="0.01" min="0" inputmode="decimal" />
+            </div>
+
+            <div class="field">
+              <label for="salesTotal">Total (auto)</label>
+              <input id="salesTotal" name="salesTotal" type="number" step="0.01" min="0" inputmode="decimal" readonly />
+              <p class="hint">Calculated as Cash + Online + Card.</p>
+            </div>
+
+            <div class="field">
+              <label for="cashInTill">Cash in till/register</label>
+              <input id="cashInTill" name="cashInTill" type="number" step="0.01" min="0" inputmode="decimal" />
+            </div>
+
+            <div class="field">
+              <label for="cashInEnvelope">Cash in envelope</label>
+              <input id="cashInEnvelope" name="cashInEnvelope" type="number" step="0.01" min="0" inputmode="decimal" />
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2>Employees / Worked time</h2>
+          <table class="tight" aria-label="Employees table">
+            <thead>
+              <tr>
+                <th style="width: 45%">Employee</th>
+                <th class="nowrap" style="width: 20%">Hours</th>
+                <th class="nowrap" style="width: 20%">Minutes</th>
+                <th class="right" style="width: 15%"></th>
+              </tr>
+            </thead>
+            <tbody id="employeesBody"></tbody>
+          </table>
+          <div class="actions">
+            <button class="secondary" type="button" id="addEmployee">Add employee</button>
+          </div>
+        </section>
+
+        <section>
+          <h2>Invoices / WZ</h2>
+          <table class="tight" aria-label="Invoices table">
+            <thead>
+              <tr>
+                <th style="width: 18%">Document #</th>
+                <th style="width: 30%">Contractor</th>
+                <th class="nowrap" style="width: 16%">Amount</th>
+                <th style="width: 21%">Payment method</th>
+                <th class="right" style="width: 15%"></th>
+              </tr>
+            </thead>
+            <tbody id="invoicesBody"></tbody>
+          </table>
+          <div class="actions">
+            <button class="secondary" type="button" id="addInvoice">Add invoice</button>
+          </div>
+        </section>
+
+        <section>
+          <h2>Payments / Expenses</h2>
+          <table class="tight" aria-label="Expenses table">
+            <thead>
+              <tr>
+                <th style="width: 52%">Description</th>
+                <th class="nowrap" style="width: 18%">Amount</th>
+                <th class="right" style="width: 15%"></th>
+              </tr>
+            </thead>
+            <tbody id="expensesBody"></tbody>
+          </table>
+          <div class="grid-2" style="margin-top: 0.85rem">
+            <div></div>
+            <div class="field">
+              <label for="expensesSum">Expenses sum (auto)</label>
+              <input id="expensesSum" name="expensesSum" type="number" step="0.01" min="0" inputmode="decimal" readonly />
+            </div>
+          </div>
+          <div class="actions">
+            <button class="secondary" type="button" id="addExpense">Add expense</button>
+          </div>
+        </section>
+
+        <section>
+          <h2>Checklist</h2>
+          <div class="checklist">
+            <label class="check-item"><input type="checkbox" name="checklist" value="bar_stock_order" /><span>Bar stock order (list)</span></label>
+            <label class="check-item"><input type="checkbox" name="checklist" value="ac_max_22" /><span>Air conditioning (max 22°C)</span></label>
+            <label class="check-item"><input type="checkbox" name="checklist" value="kitchen_vent" /><span>Kitchen ventilation</span></label>
+            <label class="check-item"><input type="checkbox" name="checklist" value="dishwash_vent" /><span>Dishwash ventilation</span></label>
+            <label class="check-item"><input type="checkbox" name="checklist" value="kitchen_sealer" /><span>Kitchen sealer</span></label>
+            <label class="check-item"><input type="checkbox" name="checklist" value="kitchen_fridges_closed" /><span>Kitchen fridges closed (all)</span></label>
+            <label class="check-item"><input type="checkbox" name="checklist" value="coffee_machine_off" /><span>Coffee machine off</span></label>
+            <label class="check-item"><input type="checkbox" name="checklist" value="sterilizer_off" /><span>Sterilizer off</span></label>
+          </div>
+        </section>
+
+        <section>
+          <h2>Other notes</h2>
+          <div class="field">
+            <label for="otherNotes">Notes</label>
+            <textarea id="otherNotes" name="otherNotes" placeholder="Anything else…"></textarea>
+          </div>
+        </section>
+
+        <div class="actions" style="justify-content: space-between">
+          <button class="secondary" type="button" id="resetBtn">Reset</button>
+          <button type="submit" id="submitBtn">Send</button>
+        </div>
+        <p class="hint" id="hint">In Telegram Web App the data will be sent to the bot via <code>sendData</code>.</p>
+      </form>
+    </div>
+
+    <script>
+      const tg = window.Telegram?.WebApp;
+      if (tg) {
+        try {
+          tg.expand();
+        } catch (_) {
+          /* ignore */
+        }
+      }
+
+      const $ = (id) => document.getElementById(id);
+      const employeesBody = $("employeesBody");
+      const invoicesBody = $("invoicesBody");
+      const expensesBody = $("expensesBody");
+
+      function num(v) {
+        if (v === "" || v == null) return 0;
+        const n = Number(v);
+        return Number.isFinite(n) ? n : 0;
+      }
+
+      function formatMoney(n) {
+        return Math.round((n + Number.EPSILON) * 100) / 100;
+      }
+
+      function recalcTotals() {
+        const cashOnline = num($("cashOnline").value);
+        const cardAmount = num($("cardAmount").value);
+        $("salesTotal").value = String(formatMoney(cashOnline + cardAmount));
+
+        let expenses = 0;
+        expensesBody.querySelectorAll('input[name="expenseAmount"]').forEach((el) => {
+          expenses += num(el.value);
+        });
+        $("expensesSum").value = String(formatMoney(expenses));
+      }
+
+      function makeRemoveButton(onClick) {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "secondary";
+        btn.textContent = "Remove";
+        btn.addEventListener("click", onClick);
+        return btn;
+      }
+
+      function addEmployeeRow(initial = {}) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><input name="employeeName" type="text" placeholder="Name" value=""></td>
+          <td><input name="employeeHours" type="number" min="0" step="1" inputmode="numeric" placeholder="0" value=""></td>
+          <td><input name="employeeMinutes" type="number" min="0" max="59" step="1" inputmode="numeric" placeholder="0" value=""></td>
+          <td class="right"></td>
+        `;
+        tr.querySelector('input[name="employeeName"]').value = initial.name ?? "";
+        tr.querySelector('input[name="employeeHours"]').value = initial.hours ?? "";
+        tr.querySelector('input[name="employeeMinutes"]').value = initial.minutes ?? "";
+        tr.lastElementChild.appendChild(
+          makeRemoveButton(() => {
+            tr.remove();
+          }),
+        );
+        employeesBody.appendChild(tr);
+      }
+
+      function addInvoiceRow(initial = {}) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><input name="invoiceNumber" type="text" placeholder="e.g. FV/123" value=""></td>
+          <td><input name="invoiceContractor" type="text" placeholder="Contractor" value=""></td>
+          <td><input name="invoiceAmount" type="number" step="0.01" min="0" inputmode="decimal" placeholder="0.00" value=""></td>
+          <td>
+            <select name="invoicePaymentMethod">
+              <option value="">—</option>
+              <option value="cash">Cash</option>
+              <option value="bank_transfer">Bank transfer</option>
+            </select>
+          </td>
+          <td class="right"></td>
+        `;
+        tr.querySelector('input[name="invoiceNumber"]').value = initial.number ?? "";
+        tr.querySelector('input[name="invoiceContractor"]').value = initial.contractor ?? "";
+        tr.querySelector('input[name="invoiceAmount"]').value = initial.amount ?? "";
+        tr.querySelector('select[name="invoicePaymentMethod"]').value = initial.paymentMethod ?? "";
+        tr.lastElementChild.appendChild(
+          makeRemoveButton(() => {
+            tr.remove();
+          }),
+        );
+        invoicesBody.appendChild(tr);
+      }
+
+      function addExpenseRow(initial = {}) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><input name="expenseDescription" type="text" placeholder="e.g. Tips" value=""></td>
+          <td><input name="expenseAmount" type="number" step="0.01" min="0" inputmode="decimal" placeholder="0.00" value=""></td>
+          <td class="right"></td>
+        `;
+        tr.querySelector('input[name="expenseDescription"]').value = initial.description ?? "";
+        tr.querySelector('input[name="expenseAmount"]').value = initial.amount ?? "";
+        tr.querySelector('input[name="expenseAmount"]').addEventListener("input", recalcTotals);
+        tr.lastElementChild.appendChild(
+          makeRemoveButton(() => {
+            tr.remove();
+            recalcTotals();
+          }),
+        );
+        expensesBody.appendChild(tr);
+        recalcTotals();
+      }
+
+      $("addEmployee").addEventListener("click", () => addEmployeeRow());
+      $("addInvoice").addEventListener("click", () => addInvoiceRow());
+      $("addExpense").addEventListener("click", () => addExpenseRow());
+
+      $("cashOnline").addEventListener("input", recalcTotals);
+      $("cardAmount").addEventListener("input", recalcTotals);
+
+      $("resetBtn").addEventListener("click", () => {
+        if (!confirm("Reset the form?")) return;
+        $("form").reset();
+        employeesBody.innerHTML = "";
+        invoicesBody.innerHTML = "";
+        expensesBody.innerHTML = "";
+        addEmployeeRow();
+        addInvoiceRow();
+        addExpenseRow();
+        recalcTotals();
+        const hint = $("hint");
+        if (hint) hint.textContent = "Reset.";
+      });
+
+      function collectRows(tbody, mapper) {
+        const rows = [];
+        tbody.querySelectorAll("tr").forEach((tr) => rows.push(mapper(tr)));
+        return rows;
+      }
+
+      $("form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        recalcTotals();
+
+        const checklist = Array.from(document.querySelectorAll('input[name="checklist"]:checked')).map(
+          (el) => el.value,
+        );
+
+        const data = {
+          reportDate: $("reportDate").value || null,
+          summary: {
+            cashOnline: num($("cashOnline").value),
+            card: num($("cardAmount").value),
+            total: num($("salesTotal").value),
+            cashInTill: num($("cashInTill").value),
+            cashInEnvelope: num($("cashInEnvelope").value),
+          },
+          employees: collectRows(employeesBody, (tr) => ({
+            name: tr.querySelector('input[name="employeeName"]').value.trim(),
+            hours: num(tr.querySelector('input[name="employeeHours"]').value),
+            minutes: num(tr.querySelector('input[name="employeeMinutes"]').value),
+          })).filter((r) => r.name || r.hours || r.minutes),
+          invoices: collectRows(invoicesBody, (tr) => ({
+            documentNumber: tr.querySelector('input[name="invoiceNumber"]').value.trim(),
+            contractor: tr.querySelector('input[name="invoiceContractor"]').value.trim(),
+            amount: num(tr.querySelector('input[name="invoiceAmount"]').value),
+            paymentMethod: tr.querySelector('select[name="invoicePaymentMethod"]').value || null,
+          })).filter((r) => r.documentNumber || r.contractor || r.amount || r.paymentMethod),
+          expenses: collectRows(expensesBody, (tr) => ({
+            description: tr.querySelector('input[name="expenseDescription"]').value.trim(),
+            amount: num(tr.querySelector('input[name="expenseAmount"]').value),
+          })).filter((r) => r.description || r.amount),
+          expensesSum: num($("expensesSum").value),
+          checklist,
+          otherNotes: $("otherNotes").value.trim(),
+          signature: $("signature").value.trim(),
+        };
+
+        const json = JSON.stringify(data);
+        const hint = $("hint");
+
+        if (tg) {
+          $("submitBtn").disabled = true;
+          tg.sendData(json);
+          if (hint) hint.textContent = "Sent to bot. Closing…";
+          setTimeout(() => tg.close(), 250);
+        } else {
+          alert("Preview (not in Telegram):\n" + json);
+          if (hint) hint.textContent = "Preview shown (not in Telegram).";
+        }
+      });
+
+      // Seed one row per repeating section.
+      addEmployeeRow();
+      addInvoiceRow();
+      addExpenseRow();
+      recalcTotals();
+    </script>
+  </body>
+</html>
+
