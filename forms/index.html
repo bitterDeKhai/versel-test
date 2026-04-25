@@ -251,7 +251,7 @@
     <div class="card">
       <header>
         <h1>Daily Report</h1>
-        <div class="subtle">Sends JSON via Telegram WebApp <code>sendData</code></div>
+        <!-- <div class="subtle">Sends JSON via Telegram WebApp <code>sendData</code></div> -->
       </header>
 
       <form id="form" novalidate>
@@ -332,6 +332,7 @@
           </div>
         </section>
 
+        <!-- TEMP: invoices section disabled
         <hr class="sep" />
         <section>
           <h2>Invoices / WZ</h2>
@@ -351,6 +352,7 @@
             <button class="secondary" type="button" id="addInvoice">Add invoice</button>
           </div>
         </section>
+        -->
 
         <hr class="sep" />
         <section>
@@ -425,12 +427,16 @@
       doneBar.innerHTML = '<button type="button">Готово</button>';
       document.body.appendChild(doneBar);
       const doneBtn = doneBar.querySelector("button");
+      function isTextEntry(el) {
+        if (!el) return false;
+        if (el.tagName === "TEXTAREA") return true;
+        if (el.tagName !== "INPUT") return false;
+        const type = (el.getAttribute("type") || "text").toLowerCase();
+        return !["date", "checkbox", "radio", "button", "submit", "color", "file"].includes(type);
+      }
       function blurActive() {
         const el = document.activeElement;
-        if (
-          el &&
-          (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT")
-        ) {
+        if (isTextEntry(el)) {
           el.blur();
         }
       }
@@ -448,18 +454,17 @@
           ) {
             return;
           }
-          blurActive();
+          // Avoid breaking date pickers / select picklists; only auto-blur text entry fields.
+          if (isTextEntry(document.activeElement)) blurActive();
         },
         { capture: true },
       );
       document.addEventListener("focusin", () => {
         const el = document.activeElement;
-        const isField =
-          el &&
-          (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT");
-        doneBar.style.display = isField ? "block" : "none";
-        setDoneHeight(isField ? doneBar.getBoundingClientRect().height : 0);
-        if (isField) {
+        const show = isTextEntry(el);
+        doneBar.style.display = show ? "block" : "none";
+        setDoneHeight(show ? doneBar.getBoundingClientRect().height : 0);
+        if (show) {
           setTimeout(() => {
             el?.scrollIntoView?.({ block: "center", inline: "nearest", behavior: "smooth" });
           }, 50);
@@ -468,11 +473,9 @@
       document.addEventListener("focusout", () => {
         setTimeout(() => {
           const el = document.activeElement;
-          const isField =
-            el &&
-            (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT");
-          doneBar.style.display = isField ? "block" : "none";
-          setDoneHeight(isField ? doneBar.getBoundingClientRect().height : 0);
+          const show = isTextEntry(el);
+          doneBar.style.display = show ? "block" : "none";
+          setDoneHeight(show ? doneBar.getBoundingClientRect().height : 0);
         }, 0);
       });
 
