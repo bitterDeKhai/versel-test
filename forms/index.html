@@ -684,16 +684,14 @@
       function addEmployeeCard(initial = {}) {
         const card = document.createElement("div");
         card.className = "item-card";
+        const displayName = initial.name?.trim() || "Work Log";
         card.innerHTML = `
           <div class="card-head">
-            <strong>Work Log</strong>
+            <strong>${displayName}</strong>
             <button type="button" class="icon-x" aria-label="Remove work log">×</button>
           </div>
           <div class="card-grid">
-            <div class="field">
-              <label>Employee Name</label>
-              <input name="employeeName" type="text" placeholder="Name" value="">
-            </div>
+            <input name="employeeName" type="hidden" value="">
             <div class="time-row">
               <div class="field">
                 <label>Hours</label>
