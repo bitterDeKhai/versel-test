@@ -284,13 +284,17 @@
       }
       .item-card .card-grid {
         display: grid;
-        grid-template-columns: 1fr 7rem 7rem;
         gap: 0.65rem;
         align-items: end;
       }
+      .item-card .time-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.65rem;
+      }
       @media (max-width: 520px) {
-        .item-card .card-grid {
-          grid-template-columns: 1fr;
+        .item-card .time-row {
+          grid-template-columns: 1fr 1fr;
         }
       }
       .kbd-done {
@@ -612,13 +616,32 @@
               <label>Employee</label>
               <input name="employeeName" type="text" placeholder="Name" value="">
             </div>
-            <div class="field">
-              <label>Hours</label>
-              <input name="employeeHours" type="number" min="0" step="1" inputmode="numeric" placeholder="0" value="">
-            </div>
-            <div class="field">
-              <label>Minutes</label>
-              <input name="employeeMinutes" type="number" min="0" max="59" step="1" inputmode="numeric" placeholder="0" value="">
+            <div class="time-row">
+              <div class="field">
+                <label>Hours</label>
+                <input
+                  name="employeeHours"
+                  type="number"
+                  min="0"
+                  step="1"
+                  inputmode="numeric"
+                  placeholder="0"
+                  value=""
+                >
+              </div>
+              <div class="field">
+                <label>Minutes</label>
+                <input
+                  name="employeeMinutes"
+                  type="number"
+                  min="0"
+                  max="59"
+                  step="1"
+                  inputmode="numeric"
+                  placeholder="0"
+                  value=""
+                >
+              </div>
             </div>
           </div>
         `;
