@@ -141,6 +141,7 @@
 
         if (tg) {
           tg.sendData(json);
+          tg.close();
         } else {
           alert("Предпросмотр (не в Telegram):\n" + json);
         }
