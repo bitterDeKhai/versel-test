@@ -219,6 +219,21 @@
       .check-item span {
         font-size: 0.9rem;
       }
+      .kbd-done {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 0.55rem 0.75rem;
+        background: color-mix(in oklab, var(--card) 92%, var(--bg) 8%);
+        border-top: 1px solid var(--border);
+        display: none;
+        z-index: 9999;
+      }
+      .kbd-done button {
+        width: 100%;
+        margin-top: 0;
+      }
     </style>
   </head>
   <body>
@@ -371,6 +386,53 @@
           /* ignore */
         }
       }
+
+      // Mobile UX: allow dismissing the on-screen keyboard.
+      const doneBar = document.createElement("div");
+      doneBar.className = "kbd-done";
+      doneBar.innerHTML = '<button type="button">Готово</button>';
+      document.body.appendChild(doneBar);
+      const doneBtn = doneBar.querySelector("button");
+      function blurActive() {
+        const el = document.activeElement;
+        if (
+          el &&
+          (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT")
+        ) {
+          el.blur();
+        }
+      }
+      doneBtn?.addEventListener("click", blurActive);
+      document.addEventListener(
+        "pointerdown",
+        (e) => {
+          const t = e.target;
+          if (
+            t instanceof Element &&
+            (t.closest("input, textarea, select, button, a, label") || t.closest(".kbd-done"))
+          ) {
+            return;
+          }
+          blurActive();
+        },
+        { capture: true },
+      );
+      document.addEventListener("focusin", () => {
+        const el = document.activeElement;
+        const isField =
+          el &&
+          (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT");
+        doneBar.style.display = isField ? "block" : "none";
+      });
+      document.addEventListener("focusout", () => {
+        setTimeout(() => {
+          const el = document.activeElement;
+          const isField =
+            el &&
+            (el.tagName === "INPUT" || el.tagName === "TEXTAREA" || el.tagName === "SELECT");
+          doneBar.style.display = isField ? "block" : "none";
+        }, 0);
+      });
 
       const $ = (id) => document.getElementById(id);
       const employeesBody = $("employeesBody");
