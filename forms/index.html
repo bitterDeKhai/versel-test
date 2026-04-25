@@ -298,6 +298,58 @@
         opacity: 0.85;
         transform: scale(0.99);
       }
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+        padding: 1rem;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 10000;
+      }
+      .modal {
+        width: 100%;
+        max-width: 28rem;
+        background: color-mix(in oklab, var(--card) 92%, var(--bg) 8%);
+        border: 1px solid var(--border);
+        border-radius: 0.9rem;
+        overflow: hidden;
+      }
+      .modal header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.75rem;
+        padding: 0.9rem 0.9rem 0.75rem;
+        margin: 0;
+      }
+      .modal header h3 {
+        margin: 0;
+        font-size: 0.95rem;
+        font-weight: 700;
+      }
+      .modal .list {
+        display: grid;
+        gap: 0.5rem;
+        padding: 0 0.9rem 0.9rem;
+      }
+      .modal .pick {
+        width: 100%;
+        text-align: left;
+        padding: 0.7rem 0.75rem;
+        border-radius: 0.7rem;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: inherit;
+        font: inherit;
+        font-weight: 650;
+        cursor: pointer;
+      }
+      .modal .pick:active {
+        opacity: 0.9;
+        transform: scale(0.99);
+      }
       .item-card .card-grid {
         display: grid;
         gap: 0.65rem;
@@ -508,6 +560,16 @@
       </form>
     </div>
 
+    <div class="modal-backdrop" id="employeePicker" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="employeePickerTitle">
+        <header>
+          <h3 id="employeePickerTitle">Select employee</h3>
+          <button type="button" class="icon-x" id="closeEmployeePicker" aria-label="Close">×</button>
+        </header>
+        <div class="list" id="employeePickerList"></div>
+      </div>
+    </div>
+
     <script>
       const tg = window.Telegram?.WebApp;
       if (tg) {
@@ -715,7 +777,40 @@
         recalcTotals();
       }
 
-      $("addEmployee").addEventListener("click", () => addEmployeeCard());
+      // MVP: pick employee from a small hardcoded list.
+      const EMPLOYEES = ["Alicja", "Bartek", "Kasia", "Michał", "Ola"];
+      const employeePicker = $("employeePicker");
+      const employeePickerList = $("employeePickerList");
+      const closeEmployeePicker = $("closeEmployeePicker");
+
+      function openEmployeePicker() {
+        employeePickerList.innerHTML = "";
+        EMPLOYEES.forEach((name) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "pick";
+          btn.textContent = name;
+          btn.addEventListener("click", () => {
+            closePicker();
+            addEmployeeCard({ name });
+          });
+          employeePickerList.appendChild(btn);
+        });
+        employeePicker.style.display = "flex";
+        employeePicker.setAttribute("aria-hidden", "false");
+      }
+
+      function closePicker() {
+        employeePicker.style.display = "none";
+        employeePicker.setAttribute("aria-hidden", "true");
+      }
+
+      closeEmployeePicker.addEventListener("click", closePicker);
+      employeePicker.addEventListener("click", (e) => {
+        if (e.target === employeePicker) closePicker();
+      });
+
+      $("addEmployee").addEventListener("click", openEmployeePicker);
       $("addInvoice").addEventListener("click", () => addInvoiceRow());
       $("addExpense").addEventListener("click", () => addExpenseRow());
 
