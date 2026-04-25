@@ -80,6 +80,9 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 0.9rem;
       }
+      .grid-2 > * {
+        min-width: 0;
+      }
       @media (max-width: 640px) {
         .grid-2 {
           grid-template-columns: 1fr;
@@ -122,6 +125,7 @@
         border-radius: 0.4rem;
         background: var(--bg);
         width: 100%;
+        min-width: 0;
       }
       textarea {
         min-height: 5.5rem;
@@ -266,17 +270,33 @@
             </div>
 
             <div class="field">
-              <label for="cashOnline">Cash + Online</label>
-              <input id="cashOnline" name="cashOnline" type="number" step="0.01" min="0" inputmode="decimal" />
+              <label for="cashOnline">Cash + Online (PLN)</label>
+              <input
+                id="cashOnline"
+                name="cashOnline"
+                type="number"
+                step="0.01"
+                min="0"
+                inputmode="decimal"
+                placeholder="0.00"
+              />
             </div>
 
             <div class="field">
-              <label for="cardAmount">Card</label>
-              <input id="cardAmount" name="cardAmount" type="number" step="0.01" min="0" inputmode="decimal" />
+              <label for="cardAmount">Card (PLN)</label>
+              <input
+                id="cardAmount"
+                name="cardAmount"
+                type="number"
+                step="0.01"
+                min="0"
+                inputmode="decimal"
+                placeholder="0.00"
+              />
             </div>
 
             <div class="field">
-              <label for="salesTotal">Total (auto)</label>
+              <label for="salesTotal">Total (PLN, auto)</label>
               <input id="salesTotal" name="salesTotal" type="number" step="0.01" min="0" inputmode="decimal" readonly />
               <p class="hint">Calculated as Cash + Online + Card.</p>
             </div>
